@@ -1,7 +1,9 @@
 <?php
 	/**
 	 * Implements hook_menu().
-	 */
+   */
+  //my-
+
 	function kairos_dashboard_menu() {
 		 $items['my-dashboard'] = array(
 		 	'title' => 'Dashboard',
@@ -30,7 +32,8 @@
 			drupal_not_found();
 		}
 		// Query for the milestones belonging to this user and
-		// within the time limit (now to 3 months from now).
+    // within the time limit (now to numDaysToDsplay from now).
+    $numDaysToDisplay = 30;
 		$date_format = "Y-m-d H:i:s";
 		$query = new EntityFieldQuery();
 		$query->entityCondition('entity_type', 'node')
@@ -38,7 +41,7 @@
 		    ->propertyCondition('status', 1)
 		    ->fieldCondition('field_milestone_date', 
 		    	'value', 
-		    	array(date($date_format), date($date_format, time() + 60*60*24*30*3)),
+		    	array(date($date_format), date($date_format, time() + 60*60*24*$numDaysToDisplay)),
 		    	'BETWEEN') 
 		    ->addMetaData('account', $user);
 		$result = $query->execute();
@@ -67,12 +70,14 @@
 
 		// Create xaxis labels.
 		$xaxis = array();
-		for($i = 0;$i < 30; $i++) {
-			if($i%7 == 0)
+		for($i = 0;$i < $numDaysToDisplay; $i++) {
+			/*if($i%7 == 0) {
 				$xaxis[$i] = date('Ymd', strtotime('+' . $i . ' days'));
-			else {
-				$xaxis[$i] = '';
-			}
+      }
+      else {
+				$xaxis[$i] = "";
+      }*/
+      $xaxis[$i] = date('Ymd', strtotime('+' . $i . ' days'));
 		}
 		// Create blank xaxis values array.
 		$blank = array();
@@ -92,47 +97,57 @@
 			);
 			// ...for each milestone date, set value in array.
 			foreach ($milestone_dates as $milestone_date => $value) {
-				$series[$index]['data'][$milestone_date] = $value;
-			}
+				$series[$index]['data'][$milestone_date] = intval($value);
+      }
 			$series[$index]['data'] = array_values($series[$index]['data']);
 
 			// Update index of what project we're working on now.
 			$index++;
-		}
+    }
 
-		// // Create basic "series" array for chart JS.
-		// $series = array(
-		// 	array(
-		// 		'type' => 'column',
-		// 		'name' => 'Project1',
-		// 		'data' => array(
-		// 			3,
-		// 			2,
-		// 			1,
-		// 			3,
-		// 			4,
-		// 		),
-		// 	),
-		// 	array(
-		// 		'type' => 'column',
-		// 		'name' => 'Project2',
-		// 		'data' => array(
-		// 			2,
-		// 			7,
-		// 			4,
-		// 			8,
-		// 			9,
-		// 		),
-		// 	),
-		// );
+    //for the projected workload spline
+
+    //construct an array with combined milestone weights
+    $sumMilestones = array_values($blank);
+    for ($day=0; $day<count($sumMilestones); $day++) {
+      $sumMilestone = 0;
+      foreach($series as $project) {
+        $sumMilestone += $project['data'][$day];
+      }
+      $sumMilestones[$day] = $sumMilestone;
+    }
+
+    //compute spline weights
+    $splineWeight = array_values($blank);
+    for ($day=0; $day<$numDaysToDisplay; $day++) {
+      for($index=0; $index<7; $index++) {
+        if($day+$index < $numDaysToDisplay) {
+          $splineWeight[$day] += $sumMilestones[$day+$index]/($index+1);
+        } 
+      }
+    }
+
+    //create spline
+    $splineSeries = array(
+      'title' => "spline",
+      'name' => "Projected Workload",
+      'data' => $splineWeight,
+      'marker' => array(
+        'enabled' =>false
+       )
+    );
+    array_push($series, $splineSeries);
 
 		drupal_add_js(array('kairosDashboardXaxis' => $xaxis), 'setting');
 		drupal_add_js(array('kairosDashboardSeries' => $series), 'setting');
-		//drupal_add_js(array('kairosDashboardSeries' => $series), 'setting');
 		drupal_add_js(array('kairosDashboardMilestones' => $data), 'setting');
 		drupal_add_js(array('kairosDashboardProjects' => $projects), 'setting');
-
-		// Append JSFiddle graphings libs
+		drupal_add_js(array('kairosDashboardBlank' => $blank), 'setting');
+		drupal_add_js(array('kairosDashboardNumDaysDisplayed' => $numDaysToDisplay), 'setting');
+		drupal_add_js(array('kairosDashboardSumMilestones' => $sumMilestones), 'setting');
+	  drupal_add_js(array('kairosDashboardSplineWeights' => $splineWeight), 'setting');
+    
+    // Append JSFiddle graphings libs
 		drupal_add_js('http://code.highcharts.com/highcharts.js', 'external');
 		drupal_add_js('http://code.highcharts.com/modules/exporting.js', 'external');
 

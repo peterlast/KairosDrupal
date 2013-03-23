@@ -14,7 +14,7 @@
 
 			// Create the data array for milestones. Create an entry for each
 			// project and each date.
-			for (i = 0; i < 90; i++) {
+			for (i = 0; i < settings.kairosDashboardNumDaysDisplayed; i++) {
 				$(settings.kairosDashboardMilestones).each(function (projectNid, milestonesDates) {
 
 				});	
@@ -33,7 +33,18 @@
 	                text: ' '
 	            },
 	            xAxis: {
-	                categories: chartXaxis
+	                categories: chartXaxis,
+                  labels: {
+                    enabled: false
+                  }
+	            },
+	            yAxis: {
+                  labels: {
+                    enabled: false
+                  },
+                  title: {
+                    enabled: false
+                  }
 	            },
 	            tooltip: {
 	                formatter: function() {
@@ -59,7 +70,6 @@
 	            },
 	            labels: {
 	                items: [{
-	                    html: 'label',
 	                    style: {
 	                        left: '40px',
 	                        top: '8px',
@@ -71,5 +81,4 @@
 	        });		
 		}
 	};
-
 })(jQuery);

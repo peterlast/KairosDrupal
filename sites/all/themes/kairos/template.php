@@ -10,3 +10,19 @@
  * for your subtheme grows. Please read the README.txt in the /preprocess and /process subfolders
  * for more information on this topic.
  */
+ 
+ /**
+* Implements hook_preprocess_node().
+*/
+function kairos_preprocess_node(&$vars) {
+  // Check for the content type = projects.
+  if ($vars['node']->type == 'project') {
+    // If it is... set the my_graph var.
+    // This could/should be the output of your custom
+    // graph function. kairos_dashboard_main_dashboard()
+    // Like:
+	//$vars['my_graph'] = print_r($vars['node'], TRUE);
+	//$vars['my_graph'] = kairos_dashboard_main_dashboard();
+    //$vars['my_graph'] = 'STUFF';
+  }
+}
