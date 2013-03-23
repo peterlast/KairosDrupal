@@ -12,9 +12,55 @@
     		'type' => MENU_CALLBACK,      		
       		//'page arguments' => array(1),
     	);
+    	
+    	$items['kairos-form-ajax'] = array(
+    		'page callback' => 'kairos_dashboard_get_form_for_ajax',
+    		'access arguments' => array('create milestone', 'create project'),
+    		'type' => MENU_CALLBACK,
+    	);
+    	
     	return $items;
 	}
-
+	
+	/**
+	 * Implements hook_init().
+	 */
+	function kairos_dashboard_init() {
+		// Since this file should only be loaded on the front page, 
+		// it cannot be declared in the info file.
+		if (drupal_is_front_page()) {
+			drupal_add_js(drupal_get_path('module', 'kairos_dashboard') . '/js/frontpage.js');
+		}
+	}
+	
+	/**
+	 * Menu callback for rendering just a form via AJAX.
+	 */
+	function kairos_dashboard_get_form_for_ajax($node_type = '') {
+		if (empty($node_type)) {
+			return drupal_not_found();
+		} 
+		
+		module_load_include('inc', 'node', 'node.pages'); 
+		
+		$form_id = $node_type . '_node_form';
+		// maybe add current users info
+		global $user;
+		// create a blank node
+		$node = new stdClass();
+		$node->uid = $user->uid;
+		$node->name = (isset($user->name) ? $user->name : '');
+		$node->type = $node_type;
+		
+		// Invoke hook_nodapi and hook_node
+		node_object_prepare($node);
+		
+		$output = drupal_get_form($form_id, $node);
+  
+  		echo drupal_render($output); 
+  		drupal_exit();
+	}
+	
 	/**
 	 * Menu callback for displaying the primary dashboard to a user.
 	 *
@@ -152,6 +198,12 @@
 		drupal_add_js('http://code.highcharts.com/modules/exporting.js', 'external');
 
 		drupal_add_js(drupal_get_path('module', 'kairos_dashboard') . '/js/dashboard.js', 'file');
+		
+		// Add date picker CSS/JS
+		drupal_add_js('/misc/ui/jquery.ui.datepicker.min.js');
+		drupal_add_js(drupal_get_path('module', 'date') . '/date_popup/jquery.timeentry.pack.js');
+		drupal_add_css('/misc/ui/jquery.ui.datepicker.css');
+		drupal_add_css(drupal_get_path('module', 'date') . '/date_popup/jquery.timeentry.css');
 
 		// Fin
 		return '<div id="foobar"></div>';
