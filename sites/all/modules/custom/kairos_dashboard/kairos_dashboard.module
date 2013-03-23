@@ -68,7 +68,11 @@
 		// Create xaxis labels.
 		$xaxis = array();
 		for($i = 0;$i < 30; $i++) {
-			$xaxis[$i] = date('Ymd', strtotime('+' . $i . ' days'));
+			if($i%7 == 0)
+				$xaxis[$i] = date('Ymd', strtotime('+' . $i . ' days'));
+			else {
+				$xaxis[$i] = '';
+			}
 		}
 		// Create blank xaxis values array.
 		$blank = array();
@@ -124,7 +128,7 @@
 
 		drupal_add_js(array('kairosDashboardXaxis' => $xaxis), 'setting');
 		drupal_add_js(array('kairosDashboardSeries' => $series), 'setting');
-		drupal_add_js(array('kairosDashboardSeries' => $series), 'setting');
+		//drupal_add_js(array('kairosDashboardSeries' => $series), 'setting');
 		drupal_add_js(array('kairosDashboardMilestones' => $data), 'setting');
 		drupal_add_js(array('kairosDashboardProjects' => $projects), 'setting');
 
