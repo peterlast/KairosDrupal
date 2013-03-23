@@ -1,13 +1,9 @@
 /* This file will hold styles for the mobile version of your website (mobile first). */
 /* This also can include ANY global CSS that applies site-wide. Unless overwritten by a more specific style rule, CSS declarations in global.css will apply site-wide. */
 
-#content {
-	float: right;
-}
 #zone-user-wrapper {
 	background-color: #808284;
 }
-
 #zone-user-wrapper h2 {
 	font-size: xx-small;
 	color: #808284;
@@ -26,21 +22,26 @@
 .branding-data {
 	border-bottom: 1px inset #404041;
 	margin-bottom: 10px;
+	padding-top: 20px;
+	padding-bottom: 20px;
 }
 
 .branding-data h6 {
 	color: #808284;
-	font-size: 40pt;
-	padding-top: 15px;
+	font-size: 50pt;
+	padding-top: 8px;
 	font-weight: lighter;
 }
 
+.logo-img {
+	max-width: 258px;
+	max-height: 80px;
+}
 #region-sidebar-first {
 	border-right:1px inset #404041;
 	width: 244px;
 	margin-right: 5px;
 	padding-right: 10px;
-	overflow-y: scroll;
 }
 
 #region-sidebar-first a:link {
@@ -61,6 +62,21 @@
 	color: #808284;
 }
 
-.region-inner h1 {
-	color: #808284;
+.field-label {
+	font-size:large;
+	padding-top: 10px;
+	padding-bottom: 5px;
+}
+
+.field-name-body{
+	max-width: 50%;
+	padding-top: 20px;
+}
+
+.field {
+	padding-left: 20px;
+}
+
+.region-inner {
+	padding-right: 20px;
 }
