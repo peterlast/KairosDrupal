@@ -1,0 +1,6 @@
+name = Kairos Dashboard
+description = Contains views for projects and milestones.
+package = Kairos
+core = 7.x
+ 
+files[] = kairos_dashboard.module
