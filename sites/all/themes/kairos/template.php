@@ -22,7 +22,7 @@ function kairos_preprocess_node(&$vars) {
     // graph function. kairos_dashboard_main_dashboard()
     // Like:
 	//$vars['my_graph'] = print_r($vars['node'], TRUE);
-	//$vars['my_graph'] = kairos_dashboard_main_dashboard();
+	//$vars['my_graph'] = kairos_dashboard_project_dashboard($vars['vid']);
     //$vars['my_graph'] = 'STUFF';
   }
 }
