@@ -1,5 +1,24 @@
 /* This file will hold styles for the mobile version of your website (mobile first). */
 /* This also can include ANY global CSS that applies site-wide. Unless overwritten by a more specific style rule, CSS declarations in global.css will apply site-wide. */
+a.button{
+  display:inline-block;
+  width:200px; 
+  height:30px;
+  padding-top:13px;
+  border:1px #D7D7D7 solid;
+  text-align:center;
+  text-decoration:none;
+  background-color:#BBBDC0;
+  border-radius: 5px;
+}
+
+a.button:hover{
+  background-color: #A7A9AB;
+}
+
+a.button:active{
+	background-image:-webkit-linear-gradient(#A7A9AB 0%, #808284 100%)
+}
 
 #zone-user-wrapper {
 	background-color: #808284;
@@ -58,6 +77,12 @@
 	color: #808284;
 }
 
+#region-sidebar-first a.button {
+	font-weight: bold;
+	text-decoration: none;
+	color: #FFFFFF;
+}
+
 #region-sidebar-first h2 {
 	font-weight: 700;
 	text-decoration: none;
@@ -95,4 +120,64 @@
 
 .block-title {
 	visibility: hidden;
+}
+
+#branding {
+	visibility: hidden;
+	height: 0px;
+}
+
+.node-form-options {
+	visibility: hidden;
+	height: 0px;
+}
+
+.content {
+	margin-top: -20px;
+}
+
+.description {
+	visibility: hidden;
+}
+
+.filter-wrapper {
+	visibility: hidden;
+	height: 0px;
+}
+
+.form-wrapper {
+	padding: 0px;
+
+}
+
+.text-summary-wrapper {
+	visibility: hidden;
+	height: 0px;
+}
+
+.container-inline-date {
+	margin-bottom: -35px;
+}
+
+#field-project-deadline-add-more-wrapper {
+	width: 50%;
+}
+
+.form-textarea {
+	height: 200px;
+}
+
+#branding {
+	visibility: hidden;
+	height: 0px;
+}
+
+.fieldset-legend {
+	visibility: hidden;
+	height: 0px;
+}
+
+.vertical-tabs-panes {
+	visibility: hidden;
+	height: 0px;
 }
