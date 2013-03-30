@@ -188,7 +188,12 @@
       'name' => "Projected Workload",
       'data' => $splineWeight,
       'marker' => array(
-        'enabled' =>false
+        'enabled' => false,
+        'states' => array(
+          'hover' => array(
+            'enabled' => false
+          )
+        )
        )
     );
     array_push($series, $splineSeries);
