@@ -80,7 +80,7 @@
 		}
 		// Query for the milestones belonging to this user and
     // within the time limit (now to numDaysToDsplay from now).
-    $numDaysToDisplay = 30;
+    $numDaysToDisplay = 31;
 		$date_format = "Y-m-d H:i:s";
 		$query = new EntityFieldQuery();
 		$query->entityCondition('entity_type', 'node')
@@ -90,7 +90,7 @@
         if(!$projectID) {//add condition limiting to 30 day view
 		      $query->fieldCondition('field_milestone_date', 
 		    	  'value', 
-		    	  array(date($date_format), date($date_format, time() + 60*60*24*$numDaysToDisplay)),
+		    	  array(date($date_format), date($date_format, time() + 60*60*24*($numDaysToDisplay-1))),
             'BETWEEN');
         }
         else { //add condition limiting to requested project
