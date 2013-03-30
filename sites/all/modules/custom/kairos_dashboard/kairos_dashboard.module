@@ -2,7 +2,6 @@
 	/**
 	 * Implements hook_menu().
    */
-  //my-
 
 	function kairos_dashboard_menu() {
 		 $items['my-dashboard'] = array(
@@ -99,23 +98,6 @@
 		  $milestones = entity_load('node', $milestones_nids);
 		}		
 
-		// Compile statistics for milestones and append to settings.
-		$data = array();
-		$projects = array();
-		foreach ($milestones as $milestone_entity_id => $milestone) {
-			// Add an entry to the corresponding project data array.
-			$project = node_load($milestone->field_project[LANGUAGE_NONE][0]['nid']);
-			$milestone_date = $milestone->field_milestone_date[LANGUAGE_NONE][0]['value'];
-			$milestone_date = date('Ymd', strtotime($milestone_date));
-			$milestone_size = $milestone->field_milestone_size[LANGUAGE_NONE][0]['value'];
-			// If it doesn't exist, create it.
-			if (!isset($data[$project->nid])) {
-				$data[$project->nid] = array();
-				$projects[$project->nid] = $project->title;
-			}
-			$data[$project->nid][$milestone_date] = $milestone_size;
-		}
-
 		// Create xaxis labels.
 		$xaxis = array();
 		for($i = 0;$i < $numDaysToDisplay; $i++) {
@@ -131,7 +113,27 @@
 		$blank = array();
 		foreach($xaxis as $date) {
 			$blank[$date] = 0;
-		}
+    }
+
+		// Compile statistics for milestones and append to settings.
+		$data = array();
+		$projects = array();
+		foreach ($milestones as $milestone_entity_id => $milestone) {
+			// Add an entry to the corresponding project data array.
+			$project = node_load($milestone->field_project[LANGUAGE_NONE][0]['nid']);
+			$milestone_date = $milestone->field_milestone_date[LANGUAGE_NONE][0]['value'];
+			$milestone_date = date('Ymd', strtotime($milestone_date));
+			$milestone_size = $milestone->field_milestone_size[LANGUAGE_NONE][0]['value'];
+			// If it doesn't exist, create it.
+			if (!isset($data[$project->nid])) {
+				$data[$project->nid] = array();
+				$projects[$project->nid] = $project->title;
+			}
+			//$data[$project->nid][$milestone_date] = $milestone_size;
+      $data[$project->nid][$milestone_date] = array();
+      $data[$project->nid][$milestone_date]['size'] = $milestone_size;
+      $data[$project->nid][$milestone_date]['name'] = $milestone->title;
+    }
 
 		// For each project...
 		$series = array();
@@ -140,14 +142,18 @@
 			// ...setup base series value data... 
 			$series[] = array(
 				'type' => 'column',
-				'name' => $projects[$project_nid],
+        'name' => $projects[$project_nid],
+        'projID' => $project_nid,
 				'data' => $blank,
 			);
 			// ...for each milestone date, set value in array.
 			foreach ($milestone_dates as $milestone_date => $value) {
-				$series[$index]['data'][$milestone_date] = intval($value);
+				//$series[$index]['data'][$milestone_date] = intval($value['size']);
+        $series[$index]['data'][$milestone_date] = array();
+			  $series[$index]['data'][$milestone_date]['y'] = intval($value['size']);
+			  $series[$index]['data'][$milestone_date]['projectID'] = $project_nid;
       }
-			$series[$index]['data'] = array_values($series[$index]['data']);
+      $series[$index]['data'] = array_values($series[$index]['data']);
 
 			// Update index of what project we're working on now.
 			$index++;
@@ -160,7 +166,8 @@
     for ($day=0; $day<count($sumMilestones); $day++) {
       $sumMilestone = 0;
       foreach($series as $project) {
-        $sumMilestone += $project['data'][$day];
+        //$sumMilestone += $project['data'][$day];
+        $sumMilestone += $project['data'][$day]['y'];
       }
       $sumMilestones[$day] = $sumMilestone;
     }
@@ -194,6 +201,7 @@
 		drupal_add_js(array('kairosDashboardNumDaysDisplayed' => $numDaysToDisplay), 'setting');
 		drupal_add_js(array('kairosDashboardSumMilestones' => $sumMilestones), 'setting');
 	  drupal_add_js(array('kairosDashboardSplineWeights' => $splineWeight), 'setting');
+	  drupal_add_js(array('kairosDashboardMilestonesBaseInfo' => $milestones), 'setting');
     
     // Append JSFiddle graphings libs
 		drupal_add_js('http://code.highcharts.com/highcharts.js', 'external');
@@ -229,7 +237,7 @@
 		}
 		// Query for the milestones belonging to this user and
     // within the time limit (now to numDaysToDsplay from now).
-    $numDaysToDisplay = 600;
+    //$numDaysToDisplay = 600;
 		$date_format = "Y-m-d H:i:s";
 		$query = new EntityFieldQuery();
 		$query->entityCondition('entity_type', 'node')
@@ -264,6 +272,12 @@
 			$data[$project->nid][$milestone_date] = $milestone_size;
 		}
 
+    //find project end date
+    $numDaysToDisplay = 0;
+    /*for($i=0; $i<count($data[$projectID]); $i++) {
+      
+    }*/
+
 		// Create xaxis labels.
 		$xaxis = array();
 		for($i = 0;$i < $numDaysToDisplay; $i++) {
@@ -284,7 +298,7 @@
 		// For each project...
 		$series = array();
 		foreach ($data as $project_nid => $milestone_dates) {
-      if($project_nid == $projecyID) {
+      if($project_nid == $projectID) {
         // ...setup base series value data... 
         $series[] = array(
           'type' => 'column',

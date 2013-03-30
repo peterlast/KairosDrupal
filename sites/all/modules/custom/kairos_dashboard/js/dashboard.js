@@ -3,6 +3,9 @@
  */
 
 (function($) {
+
+  var chartMilestones;
+
 	Drupal.behaviors.kairosDashboard = {
 		attach: function(context, settings) {
 			console.log(settings);
@@ -24,6 +27,7 @@
 	    	var chart;
 	    	var chartSeries = settings.kairosDashboardSeries;
 	    	var chartXaxis = settings.kairosDashboardXaxis;
+        chartMilestones = settings.kairosDashboardMilestones;
 	    	console.log(series);
 	        chart = new Highcharts.Chart({
 	            chart: {
@@ -52,10 +56,12 @@
 	                    if (this.point.name) { // the pie chart
 	                        s = ''+
 	                            this.point.name +': '+ this.y +' fruits';
-	                    } else {
-	                        s = ''+
-	                            this.x  +': '+ this.y;
+	                    } else if(this.series.stackKey == 'column' && this.y > 0) {
+                          s = ''+this.series.name + ': ' + chartMilestones[this.point.projectID][this.key]['name'];
 	                    }
+                      else {//projected workload line
+                        return false;
+                      }
 	                    return s;
 	                }
 	            },
@@ -63,7 +69,7 @@
 	                column: {
 	                    stacking: 'normal',
 	                    dataLabels: {
-	                        enabled: true,
+	                        //enabled: true,
 	                        color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
 	                    }
 	                }
