@@ -54,10 +54,12 @@
 	                formatter: function() {
 	                    var s;
 	                    if (this.point.name) { // the pie chart
-	                        s = ''+
-	                            this.point.name +': '+ this.y +' fruits';
+	                        return false;
 	                    } else if(this.series.stackKey == 'column' && this.y > 0) {
-                          s = ''+this.series.name + ': ' + chartMilestones[this.point.projectID][this.key]['name'];
+                          //s = ''+this.series.name + ': ' + chartMilestones[this.point.projectID][this.key]['name'];
+                          s =   'Project: <b>'+this.series.name + '</b><br>' 
+                                + 'Milestone: <b>' + chartMilestones[this.point.projectID][this.key]['name'] + '</b><br>'
+                                + 'Date: <b>' + formatDateString(this.key) + '</b>';
 	                    }
                       else {//projected workload line
                         return false;
@@ -88,3 +90,26 @@
 		}
 	};
 })(jQuery);
+
+var months = {
+  1: "January",
+  2: "February",
+  3: "March",
+  4: "April",
+  5: "May",
+  6: "June",
+  7: "July",
+  8: "August",
+  9: "September",
+  10: "October",
+  11: "November",
+  12: "December",
+}
+
+function formatDateString(date) {
+  var year = date.substring(0,4);
+  var month = date.substring(4,6);
+  var day = date.substring(6,8);
+
+  return months[parseInt(month)] + " " + day + ", " + year;
+}
