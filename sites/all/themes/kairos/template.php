@@ -23,6 +23,7 @@ function kairos_preprocess_node(&$vars) {
     // Like:
 	//$vars['my_graph'] = print_r($vars['node'], TRUE);
 	//$vars['my_graph'] = kairos_dashboard_project_dashboard($vars['vid']);
+	$vars['my_graph'] = kairos_dashboard_main_dashboard($vars['vid']);
     //$vars['my_graph'] = 'STUFF';
   }
 }
